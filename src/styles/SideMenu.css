@@ -1,4 +1,4 @@
-.sideMenu {
+.sideInfo {
     display: flex;
     flex-direction: column;
     border: 2px solid white;
@@ -15,4 +15,11 @@
 .personalInfo > div, .education > div, .experience > div {
     display: flex;
     flex-direction: column;
+}
+
+.buttons {
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
