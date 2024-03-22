@@ -76,3 +76,7 @@ export default function SideMenu () {
         </div>
     )
 }
+
+function handleInfoChange(e) {
+    
+}
