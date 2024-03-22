@@ -15,7 +15,7 @@
 
 .app {
   display: flex;
-  gap: 200px;
+  gap: 100px;
 }
 
 a {
