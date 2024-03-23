@@ -8,10 +8,14 @@
     overflow: auto;
 }
 
-.personalInfo, .education, .experience {
+.sideInfo > div {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.sideInfo h2 {
+    margin-bottom: 0;
 }
 
 .personalInfo > div, .education > div, .experience > div {
@@ -22,6 +26,7 @@
 .buttons {
     padding-top: 15px;
     display: flex;
+    flex-direction: row;
     justify-content: center;
     gap: 10px;
 }
