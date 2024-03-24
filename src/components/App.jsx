@@ -30,23 +30,112 @@ function App() {
   });
 
   // Pass field name to updateCvData and update based on that.
-  const updateCvData = (event) => {
-    setCvData({ ...cvData, [event.target.name]: event.target.value });
-  };
+  const updateCvData = (event, field, key) => {
 
+    if (field === 'info') {
+      setCvData({ ...cvData, ['info'] : { ...cvData['info'], [event.target.name]: event.target.value } });
+    } 
 
-  function generateSideInfo(object, field) {
+    else {
+      if (!field || !key || !event || !event.target || !event.target.name) {
+        throw new Error("updateCvData: Invalid input");
+      }
+      const updatedField = cvData[field]?.[key] || {};
+      // const updatedData = { ...cvData, [field]:
+      // [ ...cvData[field], [key]:
+      // { ...updatedField, [event.target.name]: event.target.value } ] };
+      updatedField[event.target.name] = event.target.value;
+      setCvData({...cvData, updatedField});
+    }
+  }
+
+  function generateSideInputs(object, field) {
     return (
       <div>
         {Object.entries(object).map(([key, value]) => (
           <>
             <label htmlFor={key}>{key}</label>
-            <input type="text" className={field} id={key} name={key} value={value} onChange={updateCvData}/>
+            <input type="text" className={field} id={key} name={key} 
+            value={value} onChange={event => updateCvData(event, field)}/>
+
+            {/* Event by itself is deprecated. Arrow function used to solve that. */}
           </>
         ))}
       </div>
     )
   }
+
+  function createFields(object, field) {
+    const inputs = [];
+    
+    Object.entries(object).forEach(([key, value]) => {
+
+      for (const property in value) {
+        inputs.push(<div>{property}: <input type="text" id={key} className={field} onChange={event => updateCvData(event, field, key)} name={property} value={value[property]}/></div>);
+      }
+    })
+  
+    return inputs;
+  }
+
+  function addMoreFields(field) {
+    if (!field) {
+      throw new Error("addMoreFields: Missing field");
+    }
+
+    const newData = cvData?.[field] ? { ...cvData } : {};
+
+    if (!newData[field]) {
+      newData[field] = [];
+    }
+
+    if (field === 'education') {
+      newData[field].push({
+        'School': '',
+        'Degree': '',
+        'Date of Study': '',
+      });
+    } else if (field === 'experience') {
+      newData[field].push({
+        'Name of Company': '',
+        'Title': '',
+        'Responsibilites': '',
+        'Date From': '',
+        'Date To': '',
+      });
+    }
+
+    setCvData(newData);
+  }
+
+  function removeField(field) {
+    if (!field) {
+      throw new Error("removeField: Missing field");
+    }
+
+    const newData = cvData?.[field] ? { ...cvData } : null;
+
+    if (!newData) {
+      throw new Error("removeField: Field does not exist");
+    }
+
+    if (!newData[field]) {
+      throw new Error("removeField: Field is not an array");
+    }
+
+    newData[field].splice(-1, 1);
+
+    setCvData(newData);
+
+    
+    // setCvData({
+    //   ...cvData,
+    //   [field]: [...cvData[field]].splice(-1, 1), // Create a copy and splice
+    // });
+
+  }
+
+
 
 
   return (
@@ -58,21 +147,21 @@ function App() {
 
               <div className="sideInfo">
                 <div className='personalInfo'>
-                  {generateSideInfo(cvData['info'], 'info')}
+                  {generateSideInputs(cvData['info'], 'info')}
                 </div>
                  
                 <div className='education'>
                   <h2>Education</h2>
-                  {generateSideInfo(cvData['education'][0], 'education')}
-                  <button>Add</button>
-                  <button>Remove</button>
+                  {createFields(cvData['education'], 'education')}
+                  <button onClick={() => addMoreFields('education')}>Add</button>
+                  <button onClick={() => removeField('education')}>Remove</button>
                 </div>
 
                 <div className='experience'>
                   <h2>Experience</h2>
-                  {generateSideInfo(cvData['experience'][0], 'experience')}
-                  <button>Add</button>
-                  <button>Remove</button>
+                  {createFields(cvData['experience'], 'experience')}
+                  <button onClick={() => addMoreFields('experience')}>Add</button>
+                  <button onClick={() => removeField('experience')}>Remove</button>
                 </div>
               </div>
 
@@ -87,24 +176,24 @@ function App() {
 
           <div className='cvEducation'>
             <h2>Education</h2>
-            {cvData.education.map((entry, index) => (
-              <div key={index} className='education-entry'>
-                <h3>{entry['School']}</h3>
-                <h4>{entry['Degree']}</h4>
-                <h5>{entry['Date of Study']}</h5>
+            {Object.entries(cvData['education']).map(([key, value]) => (
+              <div key={key}>
+                <h3>{value['School']}</h3>
+                <h4>{value['Degree']}</h4>
+                <h5>{value['Date of Study']}</h5>
               </div>
             ))}
           </div>
 
           <div className='cvExperience'>
             <h2>Experience</h2>
-              {cvData.experience.map((entry, index) => (
-                    <div key={index} className='work-entry'>
-                      <h3>{entry['Name of Company']}</h3>
-                      <h4>{entry['Title']}</h4>
-                      <h5>From: {entry['Date From']} To: {entry['Date To']}</h5>
-                      <p>{entry['Responsibilites']}</p>
-                    </div>
+              {Object.entries(cvData['experience']).map(([key, value]) => (
+                <div key={key}>
+                  <h3>{value['Name of Company']}</h3>
+                  <h4>{value['Title']}</h4>
+                  <h5>{value['Date From']} - {value['Date To']}</h5>
+                  <p>{value['Responsibilites']}</p>
+                </div>
               ))}
           </div>
         </div>
