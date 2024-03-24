@@ -3,7 +3,7 @@
 A CV app that allows you to create a customizable CV. More education or work experience sections can be added or deleted on the side menu.
 
 ## Live Page Deployment
-Can be seen [here](yomanbest-cv-app.netlify.app).
+Can be seen [here](https://yomanbest-cv-app.netlify.app).
 
 ## Technologies used
 - React
