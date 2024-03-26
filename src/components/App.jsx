@@ -41,9 +41,6 @@ function App() {
         throw new Error("updateCvData: Invalid input");
       }
       const updatedField = cvData[field]?.[key] || {};
-      // const updatedData = { ...cvData, [field]:
-      // [ ...cvData[field], [key]:
-      // { ...updatedField, [event.target.name]: event.target.value } ] };
       updatedField[event.target.name] = event.target.value;
       setCvData({...cvData, updatedField});
     }
@@ -126,12 +123,6 @@ function App() {
     newData[field].splice(-1, 1);
 
     setCvData(newData);
-
-    
-    // setCvData({
-    //   ...cvData,
-    //   [field]: [...cvData[field]].splice(-1, 1), // Create a copy and splice
-    // });
 
   }
 
